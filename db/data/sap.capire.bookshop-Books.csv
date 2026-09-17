@@ -1,0 +1,11 @@
+ID,title,author_ID,genre_ID,stock,price,currency_code
+201,Wuthering Heights,101,11,12,19.99,USD
+207,Jane Eyre,107,11,11,18.99,USD
+251,The Raven,150,16,333,15.99,USD
+252,Eleonora,150,15,555,14.99,USD
+271,Catweazle,170,13,22,21.99,USD
+272,The Tell-Tale Heart,150,16,8,12.99,USD
+273,Pride and Prejudice,107,15,0,22.99,USD
+274,Sense and Sensibility,107,15,15,20.99,USD
+275,The Fall of the House of Usher,150,16,7,13.99,USD
+276,The Cask of Amontillado,150,16,4,11.99,USD

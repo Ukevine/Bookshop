@@ -1,0 +1,53 @@
+{
+  "xsappname": "bookshop-uwase",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.CatalogViewer",
+      "description": "View books in the catalog"
+    },
+     {
+      "name": "$XSAPPNAME.SupplierViewer",
+      "description": "View suppliers"
+    },
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Full administrative access"
+    }
+
+  ],
+  "role-templates": [
+    {
+      "name": "CatalogViewer",
+      "scope-references": ["$XSAPPNAME.CatalogViewer"],
+      "description": "Can view books"
+    },
+    {
+      "name": "Admin",
+      "scope-references": ["$XSAPPNAME.Admin"],
+      "description": "Administrator with full access" 
+    },
+    {
+      "name": "SupplierViewer",
+      "scope-references": ["$XSAPPNAME.SupplierViewer"],
+      "description": "Can view suppliers"
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "Bookshop Admin",
+      "description": "Full admin access to Bookshop",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
+      ]
+    },
+    {
+      "name": "Bookshop Viewer",
+      "description": "Read-only access to Bookshop",
+      "role-template-references": [
+        "$XSAPPNAME.CatalogViewer",
+        "$XSAPPNAME.SupplierViewer"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,596 @@
+
+@baseUrl = http://localhost:4004
+
+
+
+### 1.1 GET all books 
+GET {{baseUrl}}/browse/Books
+Accept: application/json
+
+###1.2 GET books with high stock (>100) 
+GET {{baseUrl}}/browse/Books?$filter=stock gt 100&$select=ID,title,stock
+Accept: application/json
+
+### 1.3 GET books with low stock (1-5)
+GET {{baseUrl}}/browse/Books?$filter=stock gt 0 and stock le 5&$select=ID,title,stock
+Accept: application/json
+
+### 1.4 GET out-of-stock books (stock = 0) 
+GET {{baseUrl}}/browse/Books?$filter=stock eq 0&$select=ID,title,stock
+Accept: application/json
+
+### 1.5 GET a single book with expanded author
+GET {{baseUrl}}/browse/Books(251)?$expand=author
+Accept: application/json
+
+### 1.6 GET books by a specific author
+GET {{baseUrl}}/browse/Books?$filter=author/name eq 'Edgar Allan Poe'&$select=ID,title,stock
+Accept: application/json
+
+### 1.7 GET books with price between 15 and 25
+GET {{baseUrl}}/browse/Books?$filter=price ge 15 and price le 25&$select=ID,title,price
+Accept: application/json
+
+
+### 2.1 GET all authors
+GET {{baseUrl}}/admin/Authors?$select=ID,name
+Accept: application/json
+
+### 2.2 GET all books 
+GET {{baseUrl}}/admin/Books
+Accept: application/json
+
+### 2.3 GET all genres
+GET {{baseUrl}}/admin/Genres?$select=ID,name
+Accept: application/json
+
+### 2.4 CREATE a new author 
+POST {{baseUrl}}/admin/Authors
+Content-Type: application/json
+
+{
+    "name": "J.K. Rowling"
+}
+
+### 2.5 CREATE a new book 
+POST {{baseUrl}}/admin/Books
+Content-Type: application/json
+
+{
+    "title": "Harry Potter and the Philosopher's Stone",
+    "stock": 50,
+    "price": 29.99,
+    "author_ID": 181,
+    "genre_ID": 13
+}
+
+### 2.6 CREATE a book with missing title -gives an error
+POST {{baseUrl}}/admin/Books
+Content-Type: application/json
+
+{
+    "title": "",
+    "stock": 10,
+    "price": 19.99,
+    "author_ID": 101,
+    "genre_ID": 11
+}
+
+### 2.7 CREATE a book with negative stock -error
+POST {{baseUrl}}/admin/Books
+Content-Type: application/json
+
+{
+    "title": "Invalid Stock Book",
+    "stock": -10,
+    "price": 19.99,
+    "author_ID": 101,
+    "genre_ID": 11
+}
+
+### 2.8 CREATE a book with price out of range -error
+POST {{baseUrl}}/admin/Books
+Content-Type: application/json
+
+{
+    "title": "Too Expensive Book",
+    "stock": 10,
+    "price": 999,
+    "author_ID": 101,
+    "genre_ID": 11
+}
+
+### 2.9 UPDATE a book's stock
+PATCH {{baseUrl}}/admin/Books(201)
+Content-Type: application/json
+
+{
+    "stock": 25
+}
+
+### 2.10 DELETE a book
+DELETE {{baseUrl}}/admin/Books(277)
+
+
+### 3.1 CREATE a new order 
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "John Doe",
+    "status": "PENDING"
+}
+
+### 3.2 CREATE order item for book with stock 
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 201,
+    "quantity": 2,
+    "unitPrice": 19.99,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.1"
+}
+
+### 3.3 CREATE order item for OUT-OF-STOCK book -error
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 273,
+    "quantity": 1,
+    "unitPrice": 22.99,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.1"
+}
+
+### 3.4 CREATE order item with quantity > stock 
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 207,
+    "quantity": 100,
+    "unitPrice": 18.99,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.1"
+}
+
+### 3.5 CREATE order item for non-existent book 
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 999,
+    "quantity": 1,
+    "unitPrice": 10.00,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.1"
+}
+
+### 3.6 CREATE another order for a different customer
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "Jane Smith",
+    "status": "PENDING"
+}
+
+### 3.7 CREATE order item for this new order
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 251,
+    "quantity": 5,
+    "unitPrice": 15.99,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.6"
+}
+
+### 3.8 GET all orders to see what's been created
+GET {{baseUrl}}/admin/Orders
+Accept: application/json
+
+### 3.9 GET all order items with expanded book and order
+GET {{baseUrl}}/admin/OrderItems?$expand=book,order
+Accept: application/json
+
+
+### 4.1 GET all books with their current stock levels
+GET {{baseUrl}}/browse/Books?$select=ID,title,stock&$orderby=stock
+Accept: application/json
+
+### 4.2 GET specific book to verify stock decreased
+GET {{baseUrl}}/browse/Books(201)
+Accept: application/json
+
+### 4.3 GET specific book that should still have original stock
+GET {{baseUrl}}/browse/Books(252)
+Accept: application/json
+
+### 4.4 GET out-of-stock books 
+GET {{baseUrl}}/browse/Books?$filter=stock eq 0&$select=ID,title,stock
+Accept: application/json
+
+
+### 5.1 Create author with missing name
+POST {{baseUrl}}/admin/Authors
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+### 5.2 Create genre with missing name 
+POST {{baseUrl}}/admin/Genres
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+### 5.3 Create order with missing customer name 
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "",
+    "status": "PENDING"
+}
+
+### 5.4 Create order item with invalid quantity 
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 201,
+    "quantity": 0,
+    "unitPrice": 19.99,
+    "order_ID": "YOUR_ORDER_ID_FROM_3.1"
+}
+
+### 6.1 GET books with OData count
+GET {{baseUrl}}/browse/Books?$count=true
+Accept: application/json
+
+### 6.2 GET books with pagination 
+GET {{baseUrl}}/browse/Books?$top=5&$select=ID,title
+Accept: application/json
+
+### 6.3 GET books with sorting
+GET {{baseUrl}}/browse/Books?$orderby=price desc&$select=ID,title,price
+Accept: application/json
+
+### 6.4 GET books with multiple filters
+GET {{baseUrl}}/browse/Books?$filter=stock gt 10 and price lt 20&$select=ID,title,stock,price
+Accept: application/json
+
+### 6.5 Check service metadata
+GET {{baseUrl}}/browse/$metadata
+Accept: application/xml
+
+### 7.1 Get only ID and title (field selection)
+GET {{baseUrl}}/browse/Books?$select=ID,title
+Accept: application/json
+
+### 7.2 Filter books with stock > 10
+GET {{baseUrl}}/browse/Books?$filter=stock gt 10&$select=ID,title,stock
+Accept: application/json
+
+### 7.3 Sort books by stock (descending)
+GET {{baseUrl}}/browse/Books?$orderby=stock desc&$select=ID,title,stock
+Accept: application/json
+
+### 7.4 Limit to 3 books
+GET {{baseUrl}}/browse/Books?$top=3&$select=ID,title
+Accept: application/json
+
+### 7.5 Combined query (filter + sort + limit)
+GET {{baseUrl}}/browse/Books?$filter=stock gt 0&$orderby=price desc&$top=3&$select=ID,title,stock,price
+Accept: application/json
+
+### 7.6 Get a single book with expanded author
+GET {{baseUrl}}/browse/Books(251)?$expand=author
+Accept: application/json
+
+### 8.1 Get StockReport 
+GET {{baseUrl}}/admin/StockReport
+Accept: application/json
+
+### 8.2 StockReport filtered by OUT OF STOCK
+GET {{baseUrl}}/admin/StockReport?$filter=stockLevel eq 'OUT OF STOCK'
+Accept: application/json
+
+### 8.3 StockReport sorted by totalValue
+GET {{baseUrl}}/admin/StockReport?$orderby=totalValue desc
+Accept: application/json
+
+### 9.1 Get all customers with budget info
+GET {{baseUrl}}/admin/Customers
+Accept: application/json
+
+### 9.2 Get customer 1
+GET {{baseUrl}}/admin/Customers(1)
+Accept: application/json
+
+### 9.3 Get customer 3 
+GET {{baseUrl}}/admin/Customers(3)
+Accept: application/json
+
+### 10.1 Process order: 
+POST {{baseUrl}}/admin/processOrder
+Content-Type: application/json
+
+{
+    "bookID": 201,
+    "quantity": 2,
+    "customerID": 1
+}
+### 10.2 Verify stock decreased for book 201
+GET {{baseUrl}}/browse/Books(201)
+Accept: application/json
+
+### 10.3 Verify customer 1's spent amount increased
+GET {{baseUrl}}/admin/Customers(1)
+Accept: application/json
+
+
+### 11.1  Process order
+POST {{baseUrl}}/admin/processOrder
+Content-Type: application/json
+
+{
+    "bookID": 252,
+    "quantity": 5,
+    "customerID": 3
+}
+
+### 11.2 Verify customer 3's spent did NOT change
+GET {{baseUrl}}/admin/Customers(3)
+Accept: application/json
+###
+GET {{baseUrl}}/admin/getStockLevel(bookID=201)
+### 12.1  Process order
+POST {{baseUrl}}/admin/processOrder
+Content-Type: application/json
+
+{
+    "bookID": 273,
+    "quantity": 1,
+    "customerID": 1
+}
+
+### 12.2  Process order: 100x book 207 (only 11 in stock)
+POST {{baseUrl}}/admin/processOrder
+Content-Type: application/json
+
+{
+    "bookID": 207,
+    "quantity": 100,
+    "customerID": 1
+}
+
+### 13.1 Get all purchase logs
+GET {{baseUrl}}/admin/PurchaseLogs
+Accept: application/json
+
+### 13.2 Get logs for a specific customer
+GET {{baseUrl}}/admin/PurchaseLogs?$filter=customerName eq 'Uwase Kevine'
+Accept: application/json
+
+### 13.3 Get most recent logs
+GET {{baseUrl}}/admin/PurchaseLogs?$orderby=logDate desc&$top=5
+Accept: application/json
+
+### 14.1 Create a test order
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "Cancel Test",
+    "status": "PENDING"
+}
+
+### 14.2 Add an item to the order
+POST {{baseUrl}}/admin/OrderItems
+Content-Type: application/json
+
+{
+    "book_ID": 251,
+    "quantity": 3,
+    "unitPrice": 15.99,
+    "order_ID": 5
+}
+
+### 14.3 Check stock before cancel
+GET {{baseUrl}}/browse/Books(251)
+Accept: application/json
+### Note the current stock
+
+### 14.4 Call BOUND action cancelOrder (no body!)
+POST {{baseUrl}}/admin/Orders(5450bdd6-5b46-4910-8611-bc1f0317011b)/cancelOrder
+
+
+
+### 14.5 Verify stock restored
+GET {{baseUrl}}/browse/Books(251)
+Accept: application/json
+### Stock should be back to original
+
+### 14.6 Verify order status is CANCELLED
+GET {{baseUrl}}/admin/Orders(5)
+Accept: application/json
+### Expected: status = "CANCELLED"
+
+### 14.7 Try cancelling the same order again
+POST {{baseUrl}}/admin/Orders(5)/cancelOrder
+
+### 15.1 Check current stock of book 201
+GET {{baseUrl}}/browse/Books(201)
+Accept: application/json
+
+### 15.2 Restock book 201 with 5 copies
+POST {{baseUrl}}/admin/Books(201)/restock
+Content-Type: application/json
+
+{
+    "amount": 5
+}
+
+### 15.3 Verify stock increased
+GET {{baseUrl}}/browse/Books(201)
+Accept: application/json
+
+### 15.4  Try restocking with invalid amount
+POST {{baseUrl}}/admin/Books(201)/restock
+Content-Type: application/json
+
+{
+    "amount": -5
+}
+
+### 16.1 Filter: books under $20
+GET {{baseUrl}}/browse/Books?$filter=price lt 20&$select=ID,title,price
+
+### 16.2 Filter: books with stock > 100
+GET {{baseUrl}}/browse/Books?$filter=stock gt 100&$select=ID,title,stock
+
+### 16.3 Filter: books by Poe
+GET {{baseUrl}}/browse/Books?$filter=author eq 'Edgar Allan Poe'&$select=ID,title
+
+### 16.4 Filter: contains title 'Raven'
+GET {{baseUrl}}/browse/Books?$filter=contains(title,'Raven')
+
+### 16.5 Filter: in stock AND cheap
+GET {{baseUrl}}/browse/Books?$filter=stock gt 0 and price lt 20&$select=ID,title,stock,price
+
+### 17.1 Select only ID and title
+GET {{baseUrl}}/browse/Books?$select=ID,title
+
+### 17.2 Order by price (cheapest first)
+GET {{baseUrl}}/browse/Books?$orderby=price asc&$select=ID,title,price
+
+### 17.3 Top 3 most expensive
+GET {{baseUrl}}/browse/Books?$orderby=price desc&$top=3&$select=ID,title,price
+
+### 17.4 Pagination: page 2, size 3
+GET {{baseUrl}}/browse/Books?$top=3&$skip=3&$select=ID,title
+
+### 17.5 Count total books
+GET {{baseUrl}}/browse/Books?$count=true
+
+### 17.6 Combined: filter + sort + top + count
+GET {{baseUrl}}/admin/Books?$filter=stock gt 0&$orderby=price asc&$top=3&$count=true&$select=ID,title,stock,price
+
+### 18.1 Book with author expanded
+GET {{baseUrl}}/admin/Books(201)?$expand=author
+
+### 18.2 Book with author + genre
+GET {{baseUrl}}/admin/Books(201)?$expand=author,genre
+
+### 18.3 Authors with their books
+GET {{baseUrl}}/admin/Authors?$expand=books&$select=ID,name
+
+### 18.4 Three-level expand: Orders → items → book
+GET {{baseUrl}}/admin/Orders?$expand=items($expand=book)&$top=2
+
+### 19.1 Authors with only in-stock books
+GET {{baseUrl}}/admin/Authors?$expand=books($filter=stock gt 0;$select=title,stock)
+
+### 19.2 Authors with low-stock books (< 10), sorted
+GET {{baseUrl}}/admin/Authors?$expand=books($filter=stock lt 10;$select=title,stock;$orderby=stock asc)
+
+### 19.3 Authors with cheap books (< $20)
+GET {{baseUrl}}/admin/Authors?$expand=books($filter=price lt 20;$select=title,price)
+
+### 19.4 Authors with high-stock books (> 100)
+GET {{baseUrl}}/admin/Authors?$expand=books($filter=stock gt 100;$select=title,stock)
+
+### 20.1 Deep insert: order with 2 items in one request
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "Irisa Kellia",
+    "status": "PENDING",
+    "items": [
+        { "book_ID": 201, "quantity": 1, "unitPrice": 19.99 },
+        { "book_ID": 251, "quantity": 2, "unitPrice": 15.99 }
+    ]
+}
+
+### 20.2 Verify the deep insert
+GET {{baseUrl}}/admin/Orders?$expand=items&$orderby=ID desc&$top=1
+
+### 20.3 Deep insert with 3 items
+POST {{baseUrl}}/admin/Orders
+Content-Type: application/json
+
+{
+    "customerName": "Bulk Order",
+    "status": "PENDING",
+    "items": [
+        { "book_ID": 201, "quantity": 1, "unitPrice": 19.99 },
+        { "book_ID": 251, "quantity": 1, "unitPrice": 15.99 },
+        { "book_ID": 252, "quantity": 1, "unitPrice": 14.99 }
+    ]
+}
+
+### 20.4 Verify last order with items and book details
+GET {{baseUrl}}/admin/Orders?$expand=items($expand=book)&$orderby=ID desc&$top=1
+
+###
+GET http://localhost:4004/suppliers/Suppliers
+
+###
+GET http://localhost:4004/suppliers/Suppliers('1000001')
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$filter=Country eq 'RW'
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$filter=Country eq 'KE' or Country eq 'UG'
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$select=Supplier,SupplierName
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$top=3
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$skip=2&$top=2
+
+###
+GET http://localhost:4004/suppliers/Suppliers?$filter=Country eq 'RW'&$orderby=SupplierName&$top=2
+
+
+###
+POST /browse/Books(201)/attachments
+
+### Testing for OData V2
+GET http://localhost:4004/odata/v2/browse/Books(201)?$select=ID,title
+
+###
+GET http://localhost:4004/odata/v2/browse/$metadata
+
+###
+GET http://localhost:4004/odata/v2/browse/Books?$top=2
+
+
+### Attachments
+GET http://localhost:4004/browse/Books(201)/attachments
+
+###
+POST {{baseUrl}}/admin/Books(201)/attachments
+Content-Type: application/json
+
+{
+    "filename": "rest-test.txt",
+    "mimeType": "text/plain"
+}
+###
+PUT {{baseUrl}}/admin/Books(201)/attachments(3f778250-bc23-4d0b-b740-621ae34139fb)/content
+Content-Type: text/plain
+
+Girls are byurifuu idiots
+
+###
+GET {{baseUrl}}/admin/Books(201)/attachments(3f778250-bc23-4d0b-b740-621ae34139fb)/content
