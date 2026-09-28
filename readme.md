@@ -20,3 +20,11 @@ File or Folder | Purpose
 ## Learn More
 
 Learn more at <https://cap.cloud.sap>.
+
+
+##
+token
+https://bbaea2a7trial.authentication.us10.hana.ondemand.com/oauth/token
+grant_type=client_credentials
+
+

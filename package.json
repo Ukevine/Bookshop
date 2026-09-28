@@ -4,8 +4,14 @@
   "description": "Welcome to your new CAP project.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cds-serve"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "start": "cds-serve",
+    "watch-fiori-books": "cds watch --open bookshop.fioribooks.fioribooks/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy bookshopfioribooksfioribooks --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +27,13 @@
     "@sap/xssec": "^4"
   },
   "devDependencies": {
+    "@cap-js/cds-test": "^1.0.2",
     "@cap-js/sqlite": "^3",
-    "@sap/cds-dk": "^10.1.0"
+    "@sap/cds-dk": "^10.1.0",
+    "cds-plugin-ui5": "^0.17.0",
+    "jest": "^30.5.2",
+    "mbt": "^1.2.49",
+    "rimraf": "^5.0.5"
   },
   "type": "module",
   "private": true,
@@ -45,11 +56,17 @@
           "users": {
             "alice": {
               "password": "password",
-              "roles": ["Admin", "CatalogViewer", "SupplierViewer"]
+              "roles": [
+                "Admin",
+                "CatalogViewer",
+                "SupplierViewer"
+              ]
             },
             "bob": {
               "password": "password",
-              "roles": ["CatalogViewer"]
+              "roles": [
+                "CatalogViewer"
+              ]
             }
           }
         },
@@ -63,7 +80,19 @@
       },
       "odata-v2-adapter": {
         "basePath": "/odata/v2"
+      },
+      "[production]": {
+        "auth": {
+          "kind": "xsuaa"
+        }
       }
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/fiori-books",
+    "app/fiori-books"
+  ]
 }

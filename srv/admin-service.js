@@ -1,31 +1,20 @@
 export default (srv) => {
 
-    // Check stock before creating an order item
     srv.before('CREATE', 'OrderItems', async (req) => {
         const { book_ID, quantity } = req.data;
 
         const book = await SELECT.one.from('sap.capire.bookshop.Books')
             .where({ ID: book_ID });
 
-        if (!book) {
-            req.error(404, `Book with ID ${book_ID} not found`);
+        const error = validateBookOrder(book, quantity);
+         if (error) {
+            req.error(error.code, error.message);
             return;
         }
 
-        if (book.stock === 0) {
-            req.error(409, `"${book.title}" is OUT OF STOCK! Cannot order.`);
-            return;
-        }
-
-        if (book.stock < quantity) {
-            req.error(409, `Only ${book.stock} copies of "${book.title}" available. You requested ${quantity}.`);
-            return;
-        }
-
-        console.log(`Stock check PASSED for "${book.title}" (${quantity} copies)`);
+        console.log(`Stock check PASSED for "${book.title}"`);
     });
 
-    // Decrease stock after order item is created
     srv.after('CREATE', 'OrderItems', async (data, req) => {
         const { book_ID, quantity } = req.data;
 
@@ -46,7 +35,6 @@ export default (srv) => {
         }
     });
 
-    // Cancel an order and restore stock
     srv.on('cancelOrder', 'Orders', async (req) => {
         const orderID = req.params[0]?.ID || req.params.ID;
 
@@ -83,7 +71,6 @@ export default (srv) => {
         return `Order ${orderID} cancelled. ${orderItems.length} item(s) restored.`;
     });
 
-    // Get stock level for a book
     srv.on('getStockLevel', async (req) => {
         const { bookID } = req.data;
 
@@ -99,7 +86,6 @@ export default (srv) => {
         return book.stock;
     });
 
-    // Process an order: check stock + budget, deduct stock, update spent, log purchase
     srv.on('processOrder', async (req) => {
         const { bookID, quantity, customerID } = req.data;
 
@@ -203,7 +189,6 @@ export default (srv) => {
             req.error(400, error.message);
         }
     });
-        // Restock a book (bound action on Books)
     srv.on('restock', 'Books', async (req) => {
         const bookID = req.params[0]?.ID || req.params.ID;
         const { amount } = req.data;

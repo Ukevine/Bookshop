@@ -8,8 +8,6 @@ export default (srv) => {
     });
 
     srv.after('READ', 'Books', async (books, req) => {
-        console.log('ENHANCING BOOK RESPONSE ');
-        
         const bookArray = Array.isArray(books) ? books : [books];
         
         bookArray.forEach(book => {

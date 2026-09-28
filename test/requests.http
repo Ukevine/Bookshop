@@ -3,48 +3,48 @@
 
 
 
-### 1.1 GET all books 
+### GET all books 
 GET {{baseUrl}}/browse/Books
 Accept: application/json
 
-###1.2 GET books with high stock (>100) 
+###GET books with high stock (>100) 
 GET {{baseUrl}}/browse/Books?$filter=stock gt 100&$select=ID,title,stock
 Accept: application/json
 
-### 1.3 GET books with low stock (1-5)
+###GET books with low stock (1-5)
 GET {{baseUrl}}/browse/Books?$filter=stock gt 0 and stock le 5&$select=ID,title,stock
 Accept: application/json
 
-### 1.4 GET out-of-stock books (stock = 0) 
+### GET out-of-stock books (stock = 0) 
 GET {{baseUrl}}/browse/Books?$filter=stock eq 0&$select=ID,title,stock
 Accept: application/json
 
-### 1.5 GET a single book with expanded author
-GET {{baseUrl}}/browse/Books(251)?$expand=author
+###GET a single book with expanded author
+GET {{baseUrl}}/admin/Books(251)?$expand=author
 Accept: application/json
 
-### 1.6 GET books by a specific author
+###GET books by a specific author
 GET {{baseUrl}}/browse/Books?$filter=author/name eq 'Edgar Allan Poe'&$select=ID,title,stock
 Accept: application/json
 
-### 1.7 GET books with price between 15 and 25
+###GET books with price between 15 and 25
 GET {{baseUrl}}/browse/Books?$filter=price ge 15 and price le 25&$select=ID,title,price
 Accept: application/json
 
 
-### 2.1 GET all authors
+###GET all authors
 GET {{baseUrl}}/admin/Authors?$select=ID,name
 Accept: application/json
 
-### 2.2 GET all books 
+###GET all books 
 GET {{baseUrl}}/admin/Books
 Accept: application/json
 
-### 2.3 GET all genres
+###GET all genres
 GET {{baseUrl}}/admin/Genres?$select=ID,name
 Accept: application/json
 
-### 2.4 CREATE a new author 
+###CREATE a new author 
 POST {{baseUrl}}/admin/Authors
 Content-Type: application/json
 
@@ -52,7 +52,7 @@ Content-Type: application/json
     "name": "J.K. Rowling"
 }
 
-### 2.5 CREATE a new book 
+###CREATE a new book 
 POST {{baseUrl}}/admin/Books
 Content-Type: application/json
 
@@ -64,7 +64,7 @@ Content-Type: application/json
     "genre_ID": 13
 }
 
-### 2.6 CREATE a book with missing title -gives an error
+### CREATE a book with missing title -gives an error
 POST {{baseUrl}}/admin/Books
 Content-Type: application/json
 
@@ -76,7 +76,7 @@ Content-Type: application/json
     "genre_ID": 11
 }
 
-### 2.7 CREATE a book with negative stock -error
+### CREATE a book with negative stock -error
 POST {{baseUrl}}/admin/Books
 Content-Type: application/json
 
@@ -88,7 +88,7 @@ Content-Type: application/json
     "genre_ID": 11
 }
 
-### 2.8 CREATE a book with price out of range -error
+###CREATE a book with price out of range -error
 POST {{baseUrl}}/admin/Books
 Content-Type: application/json
 
@@ -100,7 +100,7 @@ Content-Type: application/json
     "genre_ID": 11
 }
 
-### 2.9 UPDATE a book's stock
+###UPDATE a book's stock
 PATCH {{baseUrl}}/admin/Books(201)
 Content-Type: application/json
 
@@ -108,11 +108,11 @@ Content-Type: application/json
     "stock": 25
 }
 
-### 2.10 DELETE a book
+###DELETE a book
 DELETE {{baseUrl}}/admin/Books(277)
 
 
-### 3.1 CREATE a new order 
+###CREATE a new order 
 POST {{baseUrl}}/admin/Orders
 Content-Type: application/json
 
@@ -121,7 +121,7 @@ Content-Type: application/json
     "status": "PENDING"
 }
 
-### 3.2 CREATE order item for book with stock 
+###CREATE order item for book with stock 
 POST {{baseUrl}}/admin/OrderItems
 Content-Type: application/json
 
@@ -132,7 +132,7 @@ Content-Type: application/json
     "order_ID": "YOUR_ORDER_ID_FROM_3.1"
 }
 
-### 3.3 CREATE order item for OUT-OF-STOCK book -error
+###CREATE order item for OUT-OF-STOCK book -error
 POST {{baseUrl}}/admin/OrderItems
 Content-Type: application/json
 
@@ -143,7 +143,7 @@ Content-Type: application/json
     "order_ID": "YOUR_ORDER_ID_FROM_3.1"
 }
 
-### 3.4 CREATE order item with quantity > stock 
+###CREATE order item with quantity > stock 
 POST {{baseUrl}}/admin/OrderItems
 Content-Type: application/json
 
@@ -154,7 +154,7 @@ Content-Type: application/json
     "order_ID": "YOUR_ORDER_ID_FROM_3.1"
 }
 
-### 3.5 CREATE order item for non-existent book 
+###CREATE order item for non-existent book 
 POST {{baseUrl}}/admin/OrderItems
 Content-Type: application/json
 
@@ -165,7 +165,7 @@ Content-Type: application/json
     "order_ID": "YOUR_ORDER_ID_FROM_3.1"
 }
 
-### 3.6 CREATE another order for a different customer
+###CREATE another order for a different customer
 POST {{baseUrl}}/admin/Orders
 Content-Type: application/json
 
@@ -174,7 +174,7 @@ Content-Type: application/json
     "status": "PENDING"
 }
 
-### 3.7 CREATE order item for this new order
+###CREATE order item for this new order
 POST {{baseUrl}}/admin/OrderItems
 Content-Type: application/json
 
@@ -185,24 +185,24 @@ Content-Type: application/json
     "order_ID": "YOUR_ORDER_ID_FROM_3.6"
 }
 
-### 3.8 GET all orders to see what's been created
+### GET all orders to see what's been created
 GET {{baseUrl}}/admin/Orders
 Accept: application/json
 
-### 3.9 GET all order items with expanded book and order
+### GET all order items with expanded book and order
 GET {{baseUrl}}/admin/OrderItems?$expand=book,order
 Accept: application/json
 
 
-### 4.1 GET all books with their current stock levels
+###GET all books with their current stock levels
 GET {{baseUrl}}/browse/Books?$select=ID,title,stock&$orderby=stock
 Accept: application/json
 
-### 4.2 GET specific book to verify stock decreased
+###GET specific book to verify stock decreased
 GET {{baseUrl}}/browse/Books(201)
 Accept: application/json
 
-### 4.3 GET specific book that should still have original stock
+###GET specific book that should still have original stock
 GET {{baseUrl}}/browse/Books(252)
 Accept: application/json
 
@@ -400,12 +400,12 @@ Content-Type: application/json
     "order_ID": 5
 }
 
-### 14.3 Check stock before cancel
-GET {{baseUrl}}/browse/Books(251)
+### Check stock before cancel
+GET {{baseUrl}}/browse/Books
 Accept: application/json
 ### Note the current stock
 
-### 14.4 Call BOUND action cancelOrder (no body!)
+### Call BOUND action cancelOrder (no body!)
 POST {{baseUrl}}/admin/Orders(5450bdd6-5b46-4910-8611-bc1f0317011b)/cancelOrder
 
 

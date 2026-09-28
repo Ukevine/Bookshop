@@ -5,8 +5,8 @@ namespace sap.capire.bookshop;
 
 entity Books : managed {
   key ID : Integer;
-  title  : localized String @mandatory;
-  descr  : localized String;
+  title  :  String @mandatory;
+  descr  :  String;
   author : Association to Authors;
   genre  : Association to Genres;
   stock  : Integer @assert.range: [0, _]; 
@@ -14,7 +14,7 @@ entity Books : managed {
   // attachments : Composition of many Attachments;
   currency : Currency;
 }
-// annotate Books.attachments with
+// annotate Books.attachments with`
 //     @Capabilities.UpdateRestrictions.NonUpdatableProperties: [] {};
 
 entity Authors : managed {

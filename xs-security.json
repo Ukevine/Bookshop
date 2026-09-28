@@ -6,30 +6,43 @@
       "name": "$XSAPPNAME.CatalogViewer",
       "description": "View books in the catalog"
     },
-     {
+    {
       "name": "$XSAPPNAME.SupplierViewer",
       "description": "View suppliers"
     },
     {
       "name": "$XSAPPNAME.Admin",
       "description": "Full administrative access"
+    },
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Admin"
+    },
+    {
+      "name": "$XSAPPNAME.CatalogViewer",
+      "description": "CatalogViewer"
     }
-
   ],
   "role-templates": [
     {
       "name": "CatalogViewer",
-      "scope-references": ["$XSAPPNAME.CatalogViewer"],
+      "scope-references": [
+        "$XSAPPNAME.CatalogViewer"
+      ],
       "description": "Can view books"
     },
     {
       "name": "Admin",
-      "scope-references": ["$XSAPPNAME.Admin"],
-      "description": "Administrator with full access" 
+      "scope-references": [
+        "$XSAPPNAME.Admin"
+      ],
+      "description": "Administrator with full access"
     },
     {
       "name": "SupplierViewer",
-      "scope-references": ["$XSAPPNAME.SupplierViewer"],
+      "scope-references": [
+        "$XSAPPNAME.SupplierViewer"
+      ],
       "description": "Can view suppliers"
     }
   ],
@@ -49,5 +62,6 @@
         "$XSAPPNAME.SupplierViewer"
       ]
     }
-  ]
+  ],
+  "attributes": []
 }

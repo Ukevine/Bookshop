@@ -1,6 +1,11 @@
 using {sap.capire.bookshop as my} from '../db/schema';
 @(requires: 'Admin')
 service AdminService @(odata: '/admin') {
+
+     @restrict: [
+        { grant: 'READ', to: ['CatalogViewer', 'Admin'] },
+        { grant: ['CREATE', 'UPDATE', 'DELETE'], to: 'Admin' }
+    ]
     @title: '{i18n>Authors}'
     entity Authors as projection on my.Authors;
 
